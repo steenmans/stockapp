@@ -11,7 +11,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane fx:id="applicationItemsScrollPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.Controller">
    <children>
       <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="1080.0">
@@ -58,15 +57,15 @@
                </font>
             </Label>
             <TextField layoutX="8.0" layoutY="261.0" prefHeight="25.0" prefWidth="164.0" />
-            <Button fx:id="applicationRemoveFiltersButton" layoutX="10.0" layoutY="300.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="164.0" text="Remove Filters" />
+            <Button fx:id="applicationRemoveFiltersButton" layoutX="10.0" layoutY="300.0" mnemonicParsing="false"  prefHeight="31.0" prefWidth="164.0" text="Remove Filters" />
          </children>
       </AnchorPane>
       <AnchorPane layoutX="791.0" layoutY="27.0" prefHeight="693.0" prefWidth="290.0">
          <children>
             <Button fx:id="applicationAddNewItemButton" layoutX="20.0" layoutY="52.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="251.0" text="Add new Item" />
-            <Button fx:id="applicationEditItemButton" layoutX="20.0" layoutY="93.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="251.0" text="Edit Item" />
-            <Button fx:id="applicationRemoveItemsButton" layoutX="20.0" layoutY="137.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="251.0" text="Remove Item" />
-            <Button fx:id="applicationAddUserButton" layoutX="20.0" layoutY="213.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="251.0" text="Add User" />
+            <Button fx:id="applicationEditItemButton" layoutX="20.0" layoutY="93.0" mnemonicParsing="false"  prefHeight="25.0" prefWidth="251.0" text="Edit Item" />
+            <Button fx:id="applicationRemoveItemsButton" layoutX="20.0" layoutY="137.0" mnemonicParsing="false"  prefHeight="25.0" prefWidth="251.0" text="Remove Item" />
+            <Button fx:id="applicationAddUserButton" layoutX="20.0" layoutY="213.0" mnemonicParsing="false" onAction="#addUserAction" prefHeight="25.0" prefWidth="251.0" text="Add User" />
             <Label layoutX="114.0" text="Items">
                <font>
                   <Font size="21.0" />
@@ -78,7 +77,7 @@
                </font>
             </Label>
             <Button fx:id="applicationEditUserButton" layoutX="20.0" layoutY="257.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="251.0" text="Edit User" />
-            <Button fx:id="applicationRemoveUserButton" layoutX="20.0" layoutY="298.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="251.0" text="Remove User" />
+            <Button fx:id="applicationRemoveUserButton" layoutX="20.0" layoutY="298.0" mnemonicParsing="false"  prefHeight="25.0" prefWidth="251.0" text="Remove User" />
          </children>
       </AnchorPane>
    </children>

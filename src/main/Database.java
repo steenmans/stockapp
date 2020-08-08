@@ -27,7 +27,6 @@ public class Database {
     }
 
     //Getters
-
     public boolean isConn_status() {
         return conn_status;
     }

@@ -11,9 +11,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 
 public class Controller {
@@ -25,6 +25,8 @@ public class Controller {
     TextField loginUsernameTextField;
     @FXML
     PasswordField loginPasswordPasswordField;
+
+    boolean admin;
 
     //Login
     public void loginButton(ActionEvent actionEvent) throws InterruptedException {
@@ -54,8 +56,9 @@ public class Controller {
         thread.join();
         boolean isOK = userLogin.isLoginOk();
         System.out.println("value:" + isOK);
+        System.out.println("Admin:" + admin);
 
-        if(isOK) {
+        if (isOK) {
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("../gui/application.fxml"));
@@ -71,6 +74,7 @@ public class Controller {
 
 
     }
+
 
     //Login Class
     public class UserLogin implements Runnable {
@@ -111,18 +115,126 @@ public class Controller {
                 while (rs.next()) {
                     loginOk = true;
                     System.out.println("gevonden");
+                    Controller.this.admin = rs.getBoolean("admin");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            isLoginOk();
 
         }
     }
 
     //**********************************Application********************
     @FXML
-    Button applicationRemoveFiltersButton,applicationAddNewItemButton,applicationEditItemButton,applicationRemoveItemsButton,applicationAddUserButton,
-            applicationEditUserButton,applicationRemoveUserButton;
+    Button applicationRemoveFiltersButton, applicationAddNewItemButton, applicationEditItemButton, applicationRemoveItemsButton, applicationAddUserButton,
+            applicationEditUserButton, applicationRemoveUserButton;
+
+    //USERS
+    public void addUserAction(ActionEvent actionEvent) {
+        if (admin) {
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("../gui/addUser.fxml"));
+                Scene scene = new Scene(fxmlLoader.load(), 400, 400);
+                Stage stage = new Stage();
+                stage.setTitle("New User");
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public class addUser implements Runnable {
+        private String username;
+        private String password1;
+        private String password2;
+        private boolean admin;
+        private boolean userAdded = false;
+        Database database = new Database();
+
+        public addUser(String username, String password1,String password2, boolean admin) {
+            this.username = username;
+            this.password1 = password1;
+            this.password2 = password2;
+            this.admin = admin;
+        }
+
+        //Check if the two passwords are the sam
+        public boolean passwordTheSame(){
+            if(this.password1.equals(this.password2)){
+                return true;
+            }else return false;
+        }
+
+        //Check if user exist
+        public boolean userExist() {
+            boolean exist = false;
+            String mysqlUserExist = "SELECT * FROM login WHERE username=?";
+            PreparedStatement ps;
+            ResultSet rs;
+
+            try {
+                //Prepared Statement
+                ps = database.getConn().prepareStatement(mysqlUserExist);
+                ps.setString(1, this.username);
+
+                //ResultSet
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                    exist = true;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return exist;
+        }
+        //Add User
+        public boolean addUser() {
+            boolean userAdded = true;
+            String mysqlInsert = "INSERT INTO login (username,password,admin) VALUES (?,?,?)";
+            try {
+
+                //PreparedStatement
+                PreparedStatement ps;
+                ps = database.getConn().prepareStatement(mysqlInsert);
+                ps.setString(1, this.username);
+                ps.setString(2, this.password1);
+                ps.setBoolean(3, this.admin);
+
+                //Execute Query
+                ps.executeQuery();
+            }catch (SQLException e){
+                e.printStackTrace();
+                userAdded = false;
+            }
+            return userAdded;
+        }
+
+        @Override
+        public void run() {
+            if(passwordTheSame()){
+                return;
+            }
+            
+
+            if(!userExist()){
+                addUser();
+                this.userAdded = true;
+            }
+        }
+    }
+
+
+    public class GetItems implements Runnable {
+
+        @Override
+        public void run() {
+
+        }
+    }
+
+
 }
