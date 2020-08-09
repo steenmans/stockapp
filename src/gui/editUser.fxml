@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.Controller">
+   <children>
+      <ScrollPane layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0">
+        <content>
+          <AnchorPane  minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <TableView fx:id="editUserTableView" prefHeight="200.0" prefWidth="200.0">
+                     <columns>
+                        <TableColumn fx:id="editUserTableColumnUsername" prefWidth="30.0" text="Username"/>
+                        <TableColumn fx:id="editUserTableColumnAdmin" prefWidth="60.0" text="Admin"/>
+                     </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+      <TextField fx:id="editUserNameTextField" layoutX="237.0" layoutY="233.0" />
+      <TextField fx:id="editUserPassword1PasswordField" layoutX="237.0" layoutY="269.0" />
+      <CheckBox fx:id="editUserAdminCheckbox" layoutX="237.0" layoutY="343.0" mnemonicParsing="false" text="Admin">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </CheckBox>
+      <Label layoutX="115.0" layoutY="230.0" text="Name:">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </Label>
+      <Label layoutX="84.0" layoutY="266.0" text="Password:">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </Label>
+      <TextField fx:id="editUserPassword2PaswordField" layoutX="237.0" layoutY="307.0" />
+      <Label layoutX="14.0" layoutY="304.0" text="Retype Password:">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </Label>
+      <Button fx:id="editUserSaveButton" layoutX="237.0" layoutY="175.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="149.0" text="save" />
+   </children>
+</AnchorPane>

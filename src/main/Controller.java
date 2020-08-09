@@ -1,19 +1,18 @@
 package main;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
+import javax.xml.stream.FactoryConfigurationError;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 
 public class Controller {
@@ -26,7 +25,28 @@ public class Controller {
     @FXML
     PasswordField loginPasswordPasswordField;
 
-    boolean admin;
+    static boolean admin = false;
+
+
+
+    //Connection
+    public static class MyConnection {
+
+        // create a function to connect with mysql database
+        public static Connection getConnection(){
+
+            Connection con = null;
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                con = DriverManager.getConnection("jdbc:mysql://steenmans.synology.me/stock?useSSL=false", "steenmans", "Marlboro5419!");
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+            }
+
+            return con;
+        }
+
+    }
 
     //Login
     public void loginButton(ActionEvent actionEvent) throws InterruptedException {
@@ -48,7 +68,6 @@ public class Controller {
         UserLogin userLogin = new UserLogin(username, password);
         System.out.println("username + password not empty");
 
-        Database database = new Database();
         Thread thread = new Thread(userLogin);
         //Start thread
         thread.start();
@@ -64,7 +83,7 @@ public class Controller {
                 fxmlLoader.setLocation(getClass().getResource("../gui/application.fxml"));
                 Scene scene = new Scene(fxmlLoader.load(), 1080, 720);
                 Stage stage = new Stage();
-                stage.setTitle("New Window");
+                stage.setTitle("Main application");
                 stage.setScene(scene);
                 stage.show();
             } catch (IOException e) {
@@ -74,7 +93,6 @@ public class Controller {
 
 
     }
-
 
     //Login Class
     public class UserLogin implements Runnable {
@@ -98,12 +116,11 @@ public class Controller {
 
         @Override
         public void run() {
-            Database database = new Database();
-            database.dbConnection();
+
 
             try {
                 //Make the prepared statement
-                ps = database.getConn().prepareStatement(mysqlString);
+                ps = MyConnection.getConnection().prepareStatement(mysqlString);
                 ps.setString(1, this.username);
                 ps.setString(2, this.password);
 
@@ -130,10 +147,12 @@ public class Controller {
     Button applicationRemoveFiltersButton, applicationAddNewItemButton, applicationEditItemButton, applicationRemoveItemsButton, applicationAddUserButton,
             applicationEditUserButton, applicationRemoveUserButton;
 
-    //USERS
+    //********USERS*****************
+    //******NewUser Screen
     public void addUserAction(ActionEvent actionEvent) {
         if (admin) {
             try {
+                System.out.println("Opening addUser");
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("../gui/addUser.fxml"));
                 Scene scene = new Scene(fxmlLoader.load(), 400, 400);
@@ -144,88 +163,214 @@ public class Controller {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("You are not Admin");
         }
     }
 
-    public class addUser implements Runnable {
-        private String username;
-        private String password1;
-        private String password2;
-        private boolean admin;
-        private boolean userAdded = false;
-        Database database = new Database();
+    @FXML
+    Button addUserAddUserButton;
+    @FXML
+    TextField addUserUserNameTextfield;
+    @FXML
+    PasswordField addUserPassword1PasswordField, addUserPassword2PasswordField;
+    @FXML
+    CheckBox addUserAdminCheckbox;
 
-        public addUser(String username, String password1,String password2, boolean admin) {
-            this.username = username;
-            this.password1 = password1;
-            this.password2 = password2;
-            this.admin = admin;
+    //Users
+    public boolean checkUsername(String username) {
+
+        boolean checkUser = false;
+        String query = "SELECT * FROM login WHERE username =?";
+        PreparedStatement ps;
+        ResultSet rs;
+
+        try {
+            ps = MyConnection.getConnection().prepareStatement(query);
+            ps.setString(1, username);
+
+            rs = ps.executeQuery();
+
+            if(rs.next())
+            {
+                checkUser = true;
+            }
+        } catch (SQLException e) {
+           e.getCause().printStackTrace();
+        }
+        return checkUser;
+    }
+    public void newUserAddAction(ActionEvent actionEvent) {
+        String username = addUserUserNameTextfield.getText();
+        String password1 = addUserPassword1PasswordField.getText();
+        String password2 = addUserPassword2PasswordField.getText();
+        boolean admin = false;
+        if (addUserAdminCheckbox.isSelected()) {
+            admin = true;
         }
 
-        //Check if the two passwords are the sam
-        public boolean passwordTheSame(){
-            if(this.password1.equals(this.password2)){
-                return true;
-            }else return false;
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        String mysqlInsert = "INSERT INTO login (username,password,admin) VALUES (?,?,?)";
+
+        if (username.equals("")) {
+            alert.setContentText("Please fill in a username");
+            alert.show();
+        } else if (password1.equals("")) {
+            alert.setContentText("Please fill in a password");
+            alert.show();
+        } else if (!password1.equals(password2)) {
+            alert.setContentText("Please retype the password");
+            alert.show();
+        } else if (checkUsername(username)) {
+            alert.setContentText("Username already exist");
+            alert.show();
         }
 
-        //Check if user exist
-        public boolean userExist() {
-            boolean exist = false;
-            String mysqlUserExist = "SELECT * FROM login WHERE username=?";
+        else {
+
             PreparedStatement ps;
             ResultSet rs;
 
             try {
-                //Prepared Statement
-                ps = database.getConn().prepareStatement(mysqlUserExist);
-                ps.setString(1, this.username);
+                ps = MyConnection.getConnection().prepareStatement(mysqlInsert);
+                ps.setString(1, username);
+                ps.setString(2, password1);
+                ps.setBoolean(3, admin);
 
-                //ResultSet
-                rs = ps.executeQuery();
-                while (rs.next()) {
-                    exist = true;
+                if (ps.executeUpdate() > 0) {
+                    alert.setContentText("Username added");
+                    alert.show();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return exist;
-        }
-        //Add User
-        public boolean addUser() {
-            boolean userAdded = true;
-            String mysqlInsert = "INSERT INTO login (username,password,admin) VALUES (?,?,?)";
-            try {
 
-                //PreparedStatement
-                PreparedStatement ps;
-                ps = database.getConn().prepareStatement(mysqlInsert);
-                ps.setString(1, this.username);
-                ps.setString(2, this.password1);
-                ps.setBoolean(3, this.admin);
-
-                //Execute Query
-                ps.executeQuery();
-            }catch (SQLException e){
-                e.printStackTrace();
-                userAdded = false;
+            } catch (SQLException e) {
+                e.getCause().printStackTrace();
             }
-            return userAdded;
-        }
 
-        @Override
-        public void run() {
-            if(passwordTheSame()){
-                return;
-            }
-            
-
-            if(!userExist()){
-                addUser();
-                this.userAdded = true;
-            }
         }
     }
+
+    //*****Edit User
+    @FXML
+    TableView editUserTableView;
+    @FXML
+    TableColumn editUserTableColumnUsername, editUserTableColumnAdmin;
+    @FXML
+    TextField editUserNameTextField,editUserPassword2PaswordField;
+    @FXML
+    CheckBox editUserAdminCheckbox;
+    @FXML
+    Button editUserSaveButton;
+
+
+
+
+    ObservableList<User> observableArrayList = FXCollections.observableArrayList();
+    //Open
+    public void openEditUserAction(ActionEvent actionEvent) {
+        if (admin) {
+            try {
+                System.out.println("Opening editUser");
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("../gui/editUser.fxml"));
+                Scene scene = new Scene(fxmlLoader.load(), 400, 400);
+                Stage stage = new Stage();
+                stage.setTitle("Edit User");
+                stage.setScene(scene);
+                stage.show();
+
+                //fill the obervableArraylist
+                getUsersIntoObservableArraylist();
+                User user = observableArrayList.get(0);
+                System.out.println("Username:" + user.getUsername());
+                //Show them
+                //TODO werkt niet
+                ///setUsersInEditUsersTableview();
+
+
+            } catch (Exception e) {
+                e.getCause().printStackTrace();
+            }
+        }else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("You are not Admin");
+        }
+    }
+
+
+    public class User{
+        String username;
+        String password;
+        boolean admin = false;
+
+        public User(String username, String password,boolean admin) {
+            this.username = username;
+            this.password = password;
+            this.admin = admin;
+        }
+
+
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password1) {
+            this.password = password1;
+        }
+
+        public boolean getAdmin() {
+            return admin;
+        }
+
+        public void setAdmin(boolean admin) {
+            this.admin = admin;
+        }
+    }
+    public void getUsersIntoObservableArraylist(){
+        String mysqlSelect = "SELECT * FROM login";
+        Statement st;
+        ResultSet rs;
+
+        try {
+            st = MyConnection.getConnection().createStatement();
+            rs = st.executeQuery(mysqlSelect);
+
+            while (rs.next()){
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                boolean admin = rs.getBoolean("admin");
+
+                User user = new User(username,password,admin);
+                observableArrayList.add(user);
+            }
+        }catch (SQLException e){
+            e.getCause().printStackTrace();
+        }
+
+
+    }
+    public void setUsersInEditUsersTableview(){
+        editUserTableColumnUsername.setCellValueFactory(new PropertyValueFactory<>("username"));
+        //editUserTableColumnAdmin.setCellValueFactory(new PropertyValueFactory<>("admin"));
+
+        editUserTableView.setItems(observableArrayList);
+
+    }
+
+
+
+
+
 
 
     public class GetItems implements Runnable {

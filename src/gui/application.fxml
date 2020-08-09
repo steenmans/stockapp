@@ -76,7 +76,7 @@
                   <Font size="21.0" />
                </font>
             </Label>
-            <Button fx:id="applicationEditUserButton" layoutX="20.0" layoutY="257.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="251.0" text="Edit User" />
+            <Button fx:id="applicationEditUserButton" layoutX="20.0" layoutY="257.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="251.0" text="Edit User" onAction="#openEditUserAction"/>
             <Button fx:id="applicationRemoveUserButton" layoutX="20.0" layoutY="298.0" mnemonicParsing="false"  prefHeight="25.0" prefWidth="251.0" text="Remove User" />
          </children>
       </AnchorPane>
