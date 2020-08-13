@@ -251,22 +251,7 @@ public class Controller {
         }
     }
 
-    //*****Edit User
-    @FXML
-    TableView editUserTableView;
-    @FXML
-    TableColumn editUserTableColumnUsername, editUserTableColumnAdmin;
-    @FXML
-    TextField editUserNameTextField,editUserPassword2PaswordField;
-    @FXML
-    CheckBox editUserAdminCheckbox;
-    @FXML
-    Button editUserSaveButton;
 
-
-
-
-    ObservableList<User> observableArrayList = FXCollections.observableArrayList();
     //Open
     public void openEditUserAction(ActionEvent actionEvent) {
         if (admin) {
@@ -280,14 +265,6 @@ public class Controller {
                 stage.setScene(scene);
                 stage.show();
 
-                //fill the obervableArraylist
-                getUsersIntoObservableArraylist();
-                User user = observableArrayList.get(0);
-                System.out.println("Username:" + user.getUsername());
-                //Show them
-                //TODO werkt niet
-                ///setUsersInEditUsersTableview();
-
 
             } catch (Exception e) {
                 e.getCause().printStackTrace();
@@ -297,77 +274,6 @@ public class Controller {
             alert.setContentText("You are not Admin");
         }
     }
-
-
-    public class User{
-        String username;
-        String password;
-        boolean admin = false;
-
-        public User(String username, String password,boolean admin) {
-            this.username = username;
-            this.password = password;
-            this.admin = admin;
-        }
-
-
-
-        public String getUsername() {
-            return username;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public void setPassword(String password1) {
-            this.password = password1;
-        }
-
-        public boolean getAdmin() {
-            return admin;
-        }
-
-        public void setAdmin(boolean admin) {
-            this.admin = admin;
-        }
-    }
-    public void getUsersIntoObservableArraylist(){
-        String mysqlSelect = "SELECT * FROM login";
-        Statement st;
-        ResultSet rs;
-
-        try {
-            st = MyConnection.getConnection().createStatement();
-            rs = st.executeQuery(mysqlSelect);
-
-            while (rs.next()){
-                String username = rs.getString("username");
-                String password = rs.getString("password");
-                boolean admin = rs.getBoolean("admin");
-
-                User user = new User(username,password,admin);
-                observableArrayList.add(user);
-            }
-        }catch (SQLException e){
-            e.getCause().printStackTrace();
-        }
-
-
-    }
-    public void setUsersInEditUsersTableview(){
-        editUserTableColumnUsername.setCellValueFactory(new PropertyValueFactory<>("username"));
-        //editUserTableColumnAdmin.setCellValueFactory(new PropertyValueFactory<>("admin"));
-
-        editUserTableView.setItems(observableArrayList);
-
-    }
-
-
 
 
 

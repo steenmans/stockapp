@@ -11,7 +11,8 @@
 <?import javafx.scene.text.Font?>
 
 
-<AnchorPane prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.Controller">
+<?import javafx.scene.control.PasswordField?>
+<AnchorPane prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.ControllerEditUsers">
    <children>
       <ScrollPane layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0">
         <content>
@@ -19,8 +20,8 @@
                <children>
                   <TableView fx:id="editUserTableView" prefHeight="200.0" prefWidth="200.0">
                      <columns>
-                        <TableColumn fx:id="editUserTableColumnUsername" prefWidth="30.0" text="Username"/>
-                        <TableColumn fx:id="editUserTableColumnAdmin" prefWidth="60.0" text="Admin"/>
+                        <TableColumn fx:id="editUserTableColumnName" prefWidth="80.0" text="name" />
+                        <TableColumn fx:id="editUserTableColumnAdmin" prefWidth="50.0" text="admin" />
                      </columns>
                   </TableView>
                </children>
@@ -28,7 +29,7 @@
         </content>
       </ScrollPane>
       <TextField fx:id="editUserNameTextField" layoutX="237.0" layoutY="233.0" />
-      <TextField fx:id="editUserPassword1PasswordField" layoutX="237.0" layoutY="269.0" />
+      <PasswordField fx:id="editUserPassword1PasswordField" layoutX="237.0" layoutY="269.0" />
       <CheckBox fx:id="editUserAdminCheckbox" layoutX="237.0" layoutY="343.0" mnemonicParsing="false" text="Admin">
          <font>
             <Font size="21.0" />
@@ -44,7 +45,7 @@
             <Font size="21.0" />
          </font>
       </Label>
-      <TextField fx:id="editUserPassword2PaswordField" layoutX="237.0" layoutY="307.0" />
+      <PasswordField fx:id="editUserPassword2PasswordField" layoutX="237.0" layoutY="307.0" />
       <Label layoutX="14.0" layoutY="304.0" text="Retype Password:">
          <font>
             <Font size="21.0" />
