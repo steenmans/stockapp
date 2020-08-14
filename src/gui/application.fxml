@@ -1,84 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="applicationItemsScrollPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.Controller">
-   <children>
-      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="1080.0">
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-      <ScrollPane fx:id="applicationItemsScrollPane" layoutX="178.0" layoutY="27.0" prefHeight="693.0" prefWidth="613.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="178.0" AnchorPane.rightAnchor="289.0" AnchorPane.topAnchor="27.0">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="693.0" prefWidth="602.0" />
-        </content>
-      </ScrollPane>
-      <AnchorPane layoutX="-1.0" layoutY="27.0" prefHeight="693.0" prefWidth="179.0">
-         <children>
-            <Label layoutX="14.0" prefHeight="17.0" prefWidth="51.0" text="Filter">
+<AnchorPane fx:id="applicationItemsScrollPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.ControllerApplication">
+    <children>
+        <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="1080.0">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Close" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Delete" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Users">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#addUserAction" text="Add User" />
+                        <MenuItem mnemonicParsing="false" onAction="#openEditUserAction" text="Edit User" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <AnchorPane layoutX="-1.0" layoutY="27.0" prefHeight="693.0" prefWidth="179.0">
+            <children>
+                <Label layoutX="14.0" prefHeight="17.0" prefWidth="51.0" text="Filter">
+                    <font>
+                        <Font size="21.0" />
+                    </font>
+                </Label>
+                <CheckBox layoutX="14.0" layoutY="45.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="86.0" text="CheckBox" />
+                <CheckBox layoutX="14.0" layoutY="69.0" mnemonicParsing="false" text="CheckBox" />
+                <CheckBox layoutX="14.0" layoutY="95.0" mnemonicParsing="false" text="CheckBox" />
+                <CheckBox layoutX="14.0" layoutY="123.0" mnemonicParsing="false" text="CheckBox" />
+                <CheckBox layoutX="14.0" layoutY="147.0" mnemonicParsing="false" text="CheckBox" />
+                <CheckBox layoutX="14.0" layoutY="174.0" mnemonicParsing="false" text="CheckBox" />
+                <CheckBox layoutX="14.0" layoutY="199.0" mnemonicParsing="false" text="CheckBox" />
+                <Label layoutX="20.0" layoutY="230.0" text="Search">
+                    <font>
+                        <Font size="21.0" />
+                    </font>
+                </Label>
+                <TextField layoutX="8.0" layoutY="261.0" prefHeight="25.0" prefWidth="164.0" />
+                <Button fx:id="applicationRemoveFiltersButton" layoutX="10.0" layoutY="300.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="164.0" text="Remove Filters" />
+            </children>
+        </AnchorPane>
+        <AnchorPane layoutX="791.0" layoutY="27.0" prefHeight="693.0" prefWidth="290.0">
+            <children>
+                <Button fx:id="applicationAddNewItemButton" layoutX="20.0" layoutY="52.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="251.0" text="Add new Item" />
+                <Button fx:id="applicationRemoveItemsButton" layoutX="20.0" layoutY="88.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="251.0" text="Remove Item" />
+                <Label layoutX="114.0" text="Items">
+                    <font>
+                        <Font size="21.0" />
+                    </font>
+                </Label>
+            <Label layoutX="74.0" layoutY="134.0" text="Name:">
                <font>
-                  <Font size="21.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <CheckBox layoutX="14.0" layoutY="45.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="86.0" text="CheckBox" />
-            <CheckBox layoutX="14.0" layoutY="69.0" mnemonicParsing="false" text="CheckBox" />
-            <CheckBox layoutX="14.0" layoutY="95.0" mnemonicParsing="false" text="CheckBox" />
-            <CheckBox layoutX="14.0" layoutY="123.0" mnemonicParsing="false" text="CheckBox" />
-            <CheckBox layoutX="14.0" layoutY="147.0" mnemonicParsing="false" text="CheckBox" />
-            <CheckBox layoutX="14.0" layoutY="174.0" mnemonicParsing="false" text="CheckBox" />
-            <CheckBox layoutX="14.0" layoutY="199.0" mnemonicParsing="false" text="CheckBox" />
-            <Label layoutX="20.0" layoutY="230.0" text="Search">
+            <Label layoutX="13.0" layoutY="170.0" text="Order Number:">
                <font>
-                  <Font size="21.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <TextField layoutX="8.0" layoutY="261.0" prefHeight="25.0" prefWidth="164.0" />
-            <Button fx:id="applicationRemoveFiltersButton" layoutX="10.0" layoutY="300.0" mnemonicParsing="false"  prefHeight="31.0" prefWidth="164.0" text="Remove Filters" />
-         </children>
-      </AnchorPane>
-      <AnchorPane layoutX="791.0" layoutY="27.0" prefHeight="693.0" prefWidth="290.0">
-         <children>
-            <Button fx:id="applicationAddNewItemButton" layoutX="20.0" layoutY="52.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="251.0" text="Add new Item" />
-            <Button fx:id="applicationEditItemButton" layoutX="20.0" layoutY="93.0" mnemonicParsing="false"  prefHeight="25.0" prefWidth="251.0" text="Edit Item" />
-            <Button fx:id="applicationRemoveItemsButton" layoutX="20.0" layoutY="137.0" mnemonicParsing="false"  prefHeight="25.0" prefWidth="251.0" text="Remove Item" />
-            <Button fx:id="applicationAddUserButton" layoutX="20.0" layoutY="213.0" mnemonicParsing="false" onAction="#addUserAction" prefHeight="25.0" prefWidth="251.0" text="Add User" />
-            <Label layoutX="114.0" text="Items">
+            <Label layoutX="60.0" layoutY="206.0" text="In Stock:">
                <font>
-                  <Font size="21.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Label layoutX="125.0" layoutY="182.0" text="Users">
+            <Label layoutX="21.0" layoutY="241.0" text="Min To Order:">
                <font>
-                  <Font size="21.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Button fx:id="applicationEditUserButton" layoutX="20.0" layoutY="257.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="251.0" text="Edit User" onAction="#openEditUserAction"/>
-            <Button fx:id="applicationRemoveUserButton" layoutX="20.0" layoutY="298.0" mnemonicParsing="false"  prefHeight="25.0" prefWidth="251.0" text="Remove User" />
-         </children>
-      </AnchorPane>
-   </children>
+            <Label layoutX="88.0" layoutY="276.0" text="Info:">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <ImageView fx:id="applicationItemsImageView" fitHeight="182.0" fitWidth="221.0" layoutX="35.0" layoutY="430.0" pickOnBounds="true" preserveRatio="true" />
+            <TextField fx:id="applicationNameTextField" layoutX="127.0" layoutY="134.0" />
+            <TextArea fx:id="applicationInfoTextArea" layoutX="127.0" layoutY="276.0" prefHeight="105.0" prefWidth="149.0" />
+            <TextField fx:id="applicationOrderNumberTextField" layoutX="127.0" layoutY="170.0" />
+            <TextField fx:id="applicationInStockTextField" layoutX="127.0" layoutY="206.0" />
+            <TextField fx:id="applicationMinToOrderTextField" layoutX="127.0" layoutY="241.0" />
+            <Button fx:id="applicationSaveButton" layoutX="29.0" layoutY="395.0" mnemonicParsing="false" onAction="#saveAction" prefHeight="25.0" prefWidth="234.0" text="Save" />
+            </children>
+        </AnchorPane>
+        <AnchorPane layoutX="178.0" layoutY="27.0" prefHeight="693.0" prefWidth="607.0">
+            <children>
+                <TableView fx:id="applicationTableViewItems" prefHeight="693.0" prefWidth="607.0">
+                    <columns>
+                        <TableColumn fx:id="applicationTableColumnOrderNumber" prefWidth="100.0" text="Order Number" />
+                        <TableColumn fx:id="applicationTableColumnName" prefWidth="150.0" text="Name" />
+                        <TableColumn fx:id="applicationTableColumnInStock" prefWidth="100.0" text="In Stock" />
+                        <TableColumn fx:id="applicationTableColumnMin" prefWidth="100.0" text="Min To Order" />
+                    </columns>
+                </TableView>
+            </children>
+        </AnchorPane>
+    </children>
 </AnchorPane>

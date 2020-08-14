@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.Controller">
+<GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.ControllerLogin">
    <children>
       <AnchorPane prefHeight="400.0" prefWidth="400.0">
          <children>
@@ -24,7 +24,7 @@
             <PasswordField fx:id="loginPasswordPasswordField" layoutX="130.0" layoutY="216.0" />
             <ImageView fitHeight="150.0" fitWidth="236.0" layoutX="86.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../pictures/walki.jpg" />
+                  <Image url="/pictures/walki.jpg" />
                </image>
             </ImageView>
             <Label layoutX="53.0" layoutY="179.0" text="Username:">
