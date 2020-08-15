@@ -57,7 +57,7 @@
         </AnchorPane>
         <AnchorPane layoutX="791.0" layoutY="27.0" prefHeight="693.0" prefWidth="290.0">
             <children>
-                <Button fx:id="applicationAddNewItemButton" layoutX="20.0" layoutY="52.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="251.0" text="Add new Item" />
+                <Button fx:id="applicationAddNewItemButton" layoutX="20.0" layoutY="52.0" mnemonicParsing="false" onAction="#addNewItemAction" prefHeight="25.0" prefWidth="251.0" text="Add new Item" />
                 <Button fx:id="applicationRemoveItemsButton" layoutX="20.0" layoutY="88.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="251.0" text="Remove Item" />
                 <Label layoutX="114.0" text="Items">
                     <font>

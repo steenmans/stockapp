@@ -1,7 +1,5 @@
 package main;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -112,8 +110,6 @@ public class ControllerLogin {
 
         @Override
         public void run() {
-
-
             try {
                 //Make the prepared statement
                 ps = MyConnection.getConnection().prepareStatement(mysqlString);
@@ -122,9 +118,6 @@ public class ControllerLogin {
 
                 //Execute the statement and read it in a resultset
                 rs = ps.executeQuery();
-
-                System.out.println("Execute querry:" + ps.toString());
-
                 while (rs.next()) {
                     loginOk = true;
                     System.out.println("gevonden");

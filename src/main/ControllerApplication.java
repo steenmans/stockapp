@@ -8,19 +8,19 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class ControllerApplication {
 
+    //TODO nu gewoon true gezet
     boolean admin = true;
 
 
@@ -46,8 +46,6 @@ public class ControllerApplication {
         }
     }
 
-    @FXML
-    Button addUserAddUserButton;
     @FXML
     TextField addUserUserNameTextfield;
     @FXML
@@ -76,6 +74,26 @@ public class ControllerApplication {
             e.getCause().printStackTrace();
         }
         return checkUser;
+    }
+
+
+    //Connection
+    public static class MyConnection {
+
+        // create a function to connect with mysql database
+        public static Connection getConnection() {
+
+            Connection con = null;
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                con = DriverManager.getConnection("jdbc:mysql://steenmans.synology.me/stock?useSSL=false", "steenmans", "Marlboro5419!");
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+            }
+
+            return con;
+        }
+
     }
 
     public void newUserAddAction(ActionEvent actionEvent) {
@@ -149,18 +167,68 @@ public class ControllerApplication {
             alert.setContentText("You are not Admin");
         }
     }
-    //TODO
-    public void saveAction(ActionEvent actionEvent) {
 
+    public void saveAction(ActionEvent actionEvent) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Items item;
+        PreparedStatement ps;
+
+        if((item = applicationTableViewItems.getSelectionModel().getSelectedItem()) != null){
+
+            String mysqlUpdate = "UPDATE items SET orderNumber=?, name=?, info=?, minimum_to_order=?, in_stock=? " +
+                    "WHERE id=?";
+            try {
+                ps = MyConnection.getConnection().prepareStatement(mysqlUpdate);
+                ps.setString(1, applicationOrderNumberTextField.getText());
+                ps.setString(2, applicationNameTextField.getText());
+                ps.setString(3, applicationInfoTextArea.getText());
+                ps.setInt(4, Integer.parseInt(applicationMinToOrderTextField.getText()));
+                ps.setInt(5, Integer.parseInt(applicationInStockTextField.getText()));
+                ps.setInt(6, item.getId());
+
+                boolean updateOk = ps.execute();
+
+                //Als ok vernieuw de tableView
+                if(!updateOk){
+                    alert.setContentText("Item updated");
+                    itemsObservableList = getItemsFromSql();
+                    applicationTableViewItems.setItems(itemsObservableList);
+                }else {
+                    alert.setContentText("Something went wrong");
+                }
+            }catch (SQLException e){
+                e.getCause().printStackTrace();
+            }
+
+        }else {
+            alert.setContentText("Please Select an Item");
+        }
+
+        alert.show();
     }
 
-    public class GetItems implements Runnable {
+    public void addNewItemAction(ActionEvent actionEvent) {
+        if (admin) {
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("../gui/newItem.fxml"));
+                Scene scene = new Scene(fxmlLoader.load(), 400, 400);
+                Stage stage = new Stage();
+                stage.setTitle("New Item");
+                stage.setScene(scene);
+                stage.show();
 
-        @Override
-        public void run() {
 
+            } catch (Exception e) {
+                e.getCause().printStackTrace();
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("You are not Admin");
         }
     }
+
+
 
     //******************************************************************************************************************
     //******************************************************************************************************************
@@ -186,6 +254,7 @@ public class ControllerApplication {
         applicationTableColumnInStock.setCellValueFactory(new PropertyValueFactory<>("inStock"));
         applicationTableColumnMin.setCellValueFactory(new PropertyValueFactory<>("minimumToOrder"));
         applicationTableColumnName.setCellValueFactory(new PropertyValueFactory<>("name"));
+
 
         itemsObservableList = getItemsFromSql();
 
@@ -241,11 +310,17 @@ public class ControllerApplication {
         if (applicationTableViewItems.getSelectionModel().getSelectedItem() != null) {
             Items items = applicationTableViewItems.getSelectionModel().getSelectedItem();
 
+            //Items
             applicationNameTextField.setText(items.getName());
             applicationOrderNumberTextField.setText(items.getOrderNumber());
             applicationInStockTextField.setText(String.valueOf(items.getInStock()));
             applicationMinToOrderTextField.setText(String.valueOf(items.getMinimumToOrder()));
             applicationInfoTextArea.setText(items.getInfo());
+
+            //Image
+            File file = new File("src/pictures_items/" + items.getId() + ".jpg");
+            Image image = new Image(file.toURI().toString());
+            applicationItemsImageView.setImage(image);
 
         }
     }
