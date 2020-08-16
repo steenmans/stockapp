@@ -305,6 +305,11 @@ public class ControllerApplication {
 
     }
 
+    public void refreshTableView(){
+        itemsObservableList = getItemsFromSql();
+        applicationTableViewItems.setItems(itemsObservableList);
+    }
+
     public void onEdit() {
         // check the table's selected item and get selected item
         if (applicationTableViewItems.getSelectionModel().getSelectedItem() != null) {
