@@ -6,10 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-
 import javax.imageio.ImageIO;
-import java.awt.image.RenderedImage;
 import java.io.File;
 import java.sql.*;
 
@@ -24,6 +21,7 @@ public class ControllerNewItem {
     File file = null;
 
 
+    //Browse the Image
     public void browseAction(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose Image");
@@ -34,7 +32,6 @@ public class ControllerNewItem {
         if(file != null){
             newItemImageTextView.setText(file.getAbsolutePath());
         }
-
 
     }
 
@@ -56,9 +53,6 @@ public class ControllerNewItem {
         }
 
     }
-
-
-
 
     public void saveAction(ActionEvent actionEvent) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -90,14 +84,14 @@ public class ControllerNewItem {
 
                 if (!queryComplete){
 
-                    //Add Image TODO werkt nog niet
+                    //Save the Image
                     if(file != null){
                         int id = getIdFromSql(newItemOrderNumberTextField.getText());
                         System.out.println("File:" + file.toURI().toString());
                         Image image = new Image(file.toURI().toString());
                         System.out.println("ID:" + id);
 
-                        File fileToWrite = new File("src/pictures_items/");
+                        File fileToWrite = new File("C://Users/samst/OneDrive/Documents/stockapp/" + id + ".jpg");
 
                         try {
                             ImageIO.write(SwingFXUtils.fromFXImage(image, null), "jpg", fileToWrite);
@@ -106,10 +100,7 @@ public class ControllerNewItem {
                             e.printStackTrace();
                         }
 
-
                     }
-
-
 
                     alert.setContentText("New Item added");
                 }else alert.setContentText("Something went wrong");
