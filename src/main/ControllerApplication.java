@@ -342,7 +342,7 @@ public class ControllerApplication {
 
 
     //Search
-    //TODO moet niet blijven verversen,alleen als de text verandert,while moet veranderen.
+    //TODO moet niet blijven verversen,alleen als de text veranderd,while moet veranderen.
     public class Search extends Thread{
         boolean sameWord = true;
 
