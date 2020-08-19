@@ -79,7 +79,6 @@ public class ControllerApplication {
 
 
 
-
     //Connection
     public static class MyConnection {
 
@@ -176,7 +175,7 @@ public class ControllerApplication {
         Items item;
         PreparedStatement ps;
 
-        if((item = applicationTableViewItems.getSelectionModel().getSelectedItem()) != null){
+        if ((item = applicationTableViewItems.getSelectionModel().getSelectedItem()) != null) {
 
             String mysqlUpdate = "UPDATE items SET orderNumber=?, name=?, info=?, minimum_to_order=?, in_stock=? " +
                     "WHERE id=?";
@@ -192,18 +191,18 @@ public class ControllerApplication {
                 boolean updateOk = ps.execute();
 
                 //Als ok vernieuw de tableView
-                if(!updateOk){
+                if (!updateOk) {
                     alert.setContentText("Item updated");
                     itemsObservableList = getItemsFromSql();
                     applicationTableViewItems.setItems(itemsObservableList);
-                }else {
+                } else {
                     alert.setContentText("Something went wrong");
                 }
-            }catch (SQLException e){
+            } catch (SQLException e) {
                 e.getCause().printStackTrace();
             }
 
-        }else {
+        } else {
             alert.setContentText("Please Select an Item");
         }
 
@@ -213,11 +212,12 @@ public class ControllerApplication {
     public void addNewItemAction(ActionEvent actionEvent) {
         if (admin) {
             try {
+                System.out.println("Opening editUser");
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("../gui/newItem.fxml"));
                 Scene scene = new Scene(fxmlLoader.load(), 400, 400);
                 Stage stage = new Stage();
-                stage.setTitle("New Item");
+                stage.setTitle("newItem");
                 stage.setScene(scene);
                 stage.show();
 
@@ -231,7 +231,13 @@ public class ControllerApplication {
         }
     }
 
+    public void refreshAction(ActionEvent actionEvent){
+        refreshTableView();
+    }
 
+    public void removeAction(ActionEvent actionEvent){
+        removeItem();
+    }
 
     //******************************************************************************************************************
     //******************************************************************************************************************
@@ -243,14 +249,41 @@ public class ControllerApplication {
     @FXML
     private TableColumn<Items, String> applicationTableColumnName;
     @FXML
-    private TextField applicationNameTextField,applicationOrderNumberTextField,applicationInStockTextField,applicationMinToOrderTextField, applicationSearchTextField;
+    private TextField applicationNameTextField, applicationOrderNumberTextField, applicationInStockTextField, applicationMinToOrderTextField, applicationSearchTextField;
     @FXML
     private TextArea applicationInfoTextArea;
     @FXML
     private ImageView applicationItemsImageView;
     ObservableList<Items> itemsObservableList = FXCollections.observableArrayList();
 
+    public void testAdding(){
+        int count = 20;
+        String mysqlInsert = "INSERT INTO items(orderNumber, name, info, minimum_to_order, in_stock) VALUES (?,?,?,?,?)";
+        PreparedStatement ps;
+
+        for (int i = 0; i < count; i++) {
+
+            try {
+                ps = MyConnection.getConnection().prepareStatement(mysqlInsert);
+                ps.setInt(1,count);
+                ps.setString(2,String.valueOf(count+1));
+                ps.setString(3,String.valueOf(count+2));
+                ps.setInt(4,count+3);
+                ps.setInt(5,count+4);
+
+                ps.execute();
+            }catch (SQLException e){
+                e.getCause().printStackTrace();
+            }
+
+           count++;
+
+        }
+
+    }
+
     public void initialize() {
+
 
         applicationTableColumnOrderNumber.setCellValueFactory(new PropertyValueFactory<>("orderNumber"));
         applicationTableColumnOrderNumber.setCellValueFactory(new PropertyValueFactory<>("orderNumber"));
@@ -259,10 +292,9 @@ public class ControllerApplication {
         applicationTableColumnName.setCellValueFactory(new PropertyValueFactory<>("name"));
 
 
+        //Put list into the tableview
         itemsObservableList = getItemsFromSql();
-
         applicationTableViewItems.setItems(itemsObservableList);
-
 
 
         //Mouse and key
@@ -275,17 +307,44 @@ public class ControllerApplication {
             onEdit();
         });
 
-        //Search
+        //Search Thread
         Search search = new Search();
         search.start();
 
 
-
-
-
-
-
     }
+
+    public void removeItem(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        String mysqlDelete = "DELETE FROM items WHERE id=?";
+
+        if(applicationTableViewItems.getSelectionModel().getSelectedItem() != null){
+            Items itemToRemove = applicationTableViewItems.getSelectionModel().getSelectedItem();
+
+            PreparedStatement ps;
+
+            try {
+                ps = MyConnection.getConnection().prepareStatement(mysqlDelete);
+                ps.setInt(1,itemToRemove.getId());
+
+                boolean removed = ps.execute();
+
+                if(!removed){
+                    alert.setContentText("Delete complete");
+                }else alert.setContentText("Something went wrong");
+
+
+            }catch (SQLException e){
+                e.getCause().printStackTrace();
+            }
+
+
+        }else alert.setContentText("Please select an item");
+
+        refreshTableView();
+        alert.show();
+    }
+
     public ObservableList<Items> getItemsFromSql() {
         ObservableList<Items> observableList = FXCollections.observableArrayList();
 
@@ -315,7 +374,7 @@ public class ControllerApplication {
 
     }
 
-    public void refreshTableView(){
+    public void refreshTableView() {
         itemsObservableList = getItemsFromSql();
         applicationTableViewItems.setItems(itemsObservableList);
     }
@@ -341,38 +400,46 @@ public class ControllerApplication {
     }
 
 
-    //Search
-    //TODO moet niet blijven verversen,alleen als de text veranderd,while moet veranderen.
-    public class Search extends Thread{
+    //***********Search
+    public class Search extends Thread {
         boolean sameWord = true;
+        String savedWord = "";
 
-        public void run(){
-            while (true){
-                if(!applicationSearchTextField.getText().isEmpty()){
-                    applicationTableViewItems.setItems(filteredList(itemsObservableList,applicationSearchTextField.getText()));
-                }else applicationTableViewItems.setItems(itemsObservableList);
+        public void run() {
+            while (true) {
+                if (!applicationSearchTextField.getText().isEmpty() && sameWord) {
+                    applicationTableViewItems.setItems(filteredList(itemsObservableList, applicationSearchTextField.getText()));
+                    savedWord = applicationSearchTextField.getText();
+                    sameWord = false;
+                }
+                //Als er verandering van woord is
+                else if (!sameWord && !savedWord.equals(applicationSearchTextField.getText())) {
+                    sameWord = true;
+                }
+                //Ales er geen woord is
+                else if (applicationSearchTextField.getText().isEmpty()) {
+                    applicationTableViewItems.setItems(itemsObservableList);
+                }
             }
         }
     }
 
-    private boolean searchFindItems(Items items,String searchText){
+    private boolean searchFindItems(Items items, String searchText) {
         return items.getName().toLowerCase().contains(searchText.toLowerCase()) ||
                 items.getOrderNumber().toLowerCase().contains(searchText.toLowerCase()) ||
                 items.getInfo().toLowerCase().contains(searchText.toLowerCase());
     }
 
-    private ObservableList<Items> filteredList (List<Items> items,String searchText){
+    private ObservableList<Items> filteredList(List<Items> items, String searchText) {
         ObservableList<Items> filteredList = FXCollections.observableArrayList();
 
-        for(Items items1 : items){
-            if(searchFindItems(items1,searchText)){
+        for (Items items1 : items) {
+            if (searchFindItems(items1, searchText)) {
                 filteredList.add(items1);
             }
         }
         return filteredList;
     }
-
-
 
 
 }

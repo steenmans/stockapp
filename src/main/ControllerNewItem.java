@@ -3,11 +3,16 @@ package main;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
 import javax.imageio.ImageIO;
 import java.io.File;
+import java.io.IOException;
 import java.sql.*;
 
 public class ControllerNewItem {
@@ -93,6 +98,7 @@ public class ControllerNewItem {
 
                         File fileToWrite = new File("C://Users/samst/OneDrive/Documents/stockapp/" + id + ".jpg");
 
+
                         try {
                             ImageIO.write(SwingFXUtils.fromFXImage(image, null), "jpg", fileToWrite);
                             file = null;
@@ -103,6 +109,10 @@ public class ControllerNewItem {
                     }
 
                     alert.setContentText("New Item added");
+
+
+
+
                 }else alert.setContentText("Something went wrong");
 
             }catch (SQLException e){
