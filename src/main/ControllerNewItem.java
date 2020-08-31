@@ -3,15 +3,16 @@ package main;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
+
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
+
 
 import javax.imageio.ImageIO;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.*;
 
@@ -72,52 +73,91 @@ public class ControllerNewItem {
         }else if(checkName()) {
             alert.setContentText("The name already exist");
         }else {
-            String mysqlInsert = "INSERT INTO items (orderNumber,name,info,minimum_to_order,in_stock) " +
-                    "VALUES (?,?,?,?,?)";
-            PreparedStatement ps;
+            //Als er een image is //TODO werkt,alleen nog de juiste gegevens aan de image geven
+            if(file != null){
+                String mysqlInsertWithImage = "INSERT INTO items (orderNumber,name,info,minimum_to_order,in_stock,name_image,image) " +
+                        "VALUES (?,?,?,?,?,?,?)";
+                PreparedStatement ps;
 
-            try {
-                ps = MyConnection.getConnection().prepareStatement(mysqlInsert);
-
-                ps.setString(1,newItemOrderNumberTextField.getText());
-                ps.setString(2,newItemNameTextField.getText());
-                ps.setString(3,newItemInfoTextArea.getText());
-                ps.setInt(4,Integer.parseInt(newItemMinimumToOrderTextField.getText()));
-                ps.setInt(5,Integer.parseInt(newItemIntStockTextField.getText()));
-
-                Boolean queryComplete = ps.execute();
-
-                if (!queryComplete){
-
-                    //Save the Image
-                    if(file != null){
-                        int id = getIdFromSql(newItemOrderNumberTextField.getText());
-                        System.out.println("File:" + file.toURI().toString());
-                        Image image = new Image(file.toURI().toString());
-                        System.out.println("ID:" + id);
-
-                        File fileToWrite = new File("C://Users/samst/OneDrive/Documents/stockapp/" + id + ".jpg");
+                try {
+                    ps = MyConnection.getConnection().prepareStatement(mysqlInsertWithImage);
 
 
-                        try {
-                            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "jpg", fileToWrite);
-                            file = null;
-                        }catch (Exception e){
-                            e.printStackTrace();
+
+                    FileInputStream fis=new FileInputStream(file);
+
+                    ps.setString(1, newItemOrderNumberTextField.getText());
+                    ps.setString(2, newItemNameTextField.getText());
+                    ps.setString(3, newItemInfoTextArea.getText());
+                    ps.setInt(4, Integer.parseInt(newItemMinimumToOrderTextField.getText()));
+                    ps.setInt(5, Integer.parseInt(newItemIntStockTextField.getText()));
+
+                    ps.setString(6,"image 1");
+                    ps.setBlob(7,fis,(int)file.length());
+
+                    ps.executeUpdate();
+                    fis.close();
+
+
+                }catch (SQLException | FileNotFoundException e){
+                    e.getCause().printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+                //Als er geen image is
+            }else {
+                String mysqlInsert = "INSERT INTO items (orderNumber,name,info,minimum_to_order,in_stock) " +
+                        "VALUES (?,?,?,?,?)";
+                PreparedStatement ps;
+
+                try {
+                    ps = MyConnection.getConnection().prepareStatement(mysqlInsert);
+
+                    ps.setString(1, newItemOrderNumberTextField.getText());
+                    ps.setString(2, newItemNameTextField.getText());
+                    ps.setString(3, newItemInfoTextArea.getText());
+                    ps.setInt(4, Integer.parseInt(newItemMinimumToOrderTextField.getText()));
+                    ps.setInt(5, Integer.parseInt(newItemIntStockTextField.getText()));
+
+                    Boolean queryComplete = ps.execute();
+
+                    if (!queryComplete) {
+
+                        //TODO dit moet vanuit de sql database als blob komen
+                        //Save the Image
+                        if (file != null) {
+                            int id = getIdFromSql(newItemOrderNumberTextField.getText());
+                            System.out.println("File:" + file.toURI().toString());
+                            Image image = new Image(file.toURI().toString());
+                            System.out.println("ID:" + id);
+
+                            File fileToWrite = new File("../picturesItems/" + id + ".jpg");
+                            try {
+                                ImageIO.write(SwingFXUtils.fromFXImage(image, null), "jpg", fileToWrite);
+                                file = null;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
                         }
 
-                    }
-
-                    alert.setContentText("New Item added");
+                        alert.setContentText("New Item added");
 
 
+                    } else alert.setContentText("Something went wrong");
 
-
-                }else alert.setContentText("Something went wrong");
-
-            }catch (SQLException e){
-                e.getCause().printStackTrace();
+                } catch (SQLException e) {
+                    e.getCause().printStackTrace();
+                }
             }
+
+
+
+
+
+
 
         }
         alert.show();

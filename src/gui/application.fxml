@@ -66,7 +66,7 @@
             <Button fx:id="applicationRefreshButton" layoutX="9.0" layoutY="338.0" mnemonicParsing="false" onAction="#refreshAction" prefHeight="31.0" prefWidth="164.0" text="Refresh List" />
             </children>
         </AnchorPane>
-        <AnchorPane layoutX="791.0" layoutY="27.0" prefHeight="693.0" prefWidth="290.0">
+        <AnchorPane layoutX="796.0" layoutY="27.0" prefHeight="693.0" prefWidth="290.0">
             <children>
                 <Button fx:id="applicationAddNewItemButton" layoutX="20.0" layoutY="52.0" mnemonicParsing="false" onAction="#addNewItemAction" prefHeight="25.0" prefWidth="251.0" text="Add new Item" />
                 <Button fx:id="applicationRemoveItemsButton" layoutX="20.0" layoutY="88.0" mnemonicParsing="false" onAction="#removeAction" prefHeight="25.0" prefWidth="251.0" text="Remove Item" />
@@ -100,13 +100,13 @@
                   <Font size="16.0" />
                </font>
             </Label>
-            <ImageView fx:id="applicationItemsImageView" fitHeight="182.0" fitWidth="221.0" layoutX="35.0" layoutY="430.0" pickOnBounds="true" preserveRatio="true" />
             <TextField fx:id="applicationNameTextField" layoutX="127.0" layoutY="134.0" />
             <TextArea fx:id="applicationInfoTextArea" layoutX="127.0" layoutY="276.0" prefHeight="105.0" prefWidth="149.0" />
             <TextField fx:id="applicationOrderNumberTextField" layoutX="127.0" layoutY="170.0" />
             <TextField fx:id="applicationInStockTextField" layoutX="127.0" layoutY="206.0" />
             <TextField fx:id="applicationMinToOrderTextField" layoutX="127.0" layoutY="241.0" />
-            <Button fx:id="applicationSaveButton" layoutX="29.0" layoutY="395.0" mnemonicParsing="false" onAction="#saveAction" prefHeight="25.0" prefWidth="234.0" text="Save" />
+            <Button fx:id="applicationSaveButton" layoutX="29.0" layoutY="396.0" mnemonicParsing="false" onAction="#saveAction" prefHeight="25.0" prefWidth="234.0" text="Save" />
+            <ImageView fx:id="applicationItemsImageView" fitHeight="181.0" fitWidth="220.0" layoutX="35.0" layoutY="460.0" pickOnBounds="true" preserveRatio="true" />
             </children>
         </AnchorPane>
         <AnchorPane layoutX="178.0" layoutY="27.0" prefHeight="693.0" prefWidth="607.0">

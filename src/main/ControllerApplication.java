@@ -392,7 +392,7 @@ public class ControllerApplication {
             applicationInfoTextArea.setText(items.getInfo());
 
             //Image
-            File file = new File("C://Users/samst/OneDrive/Documents/stockapp/" + items.getId() + ".jpg");
+            File file = new File("../picturesItems/" + items.getId() + ".jpg");
             Image image = new Image(file.toURI().toString());
             applicationItemsImageView.setImage(image);
 
