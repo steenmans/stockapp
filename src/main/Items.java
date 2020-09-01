@@ -9,7 +9,7 @@ public class Items {
     private String info;
     private int minimumToOrder;
     private int inStock;
-    private Image image;
+    private Image image = null;
     private String imageName;
 
     //zonder image

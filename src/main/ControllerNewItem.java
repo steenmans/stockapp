@@ -125,25 +125,6 @@ public class ControllerNewItem {
                     Boolean queryComplete = ps.execute();
 
                     if (!queryComplete) {
-
-                        //TODO dit moet vanuit de sql database als blob komen
-                        //Save the Image
-                        if (file != null) {
-                            int id = getIdFromSql(newItemOrderNumberTextField.getText());
-                            System.out.println("File:" + file.toURI().toString());
-                            Image image = new Image(file.toURI().toString());
-                            System.out.println("ID:" + id);
-
-                            File fileToWrite = new File("../picturesItems/" + id + ".jpg");
-                            try {
-                                ImageIO.write(SwingFXUtils.fromFXImage(image, null), "jpg", fileToWrite);
-                                file = null;
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-
                         alert.setContentText("New Item added");
 
 

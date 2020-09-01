@@ -2,6 +2,7 @@ package main;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,6 +15,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -360,27 +362,35 @@ public class ControllerApplication {
 
             //TODO MOET NOG VAN BLOB NAAR IMAGE GEBRACHT WORDEN,Niet direct in items steken eerst binnenhalen
             while (rs.next()) {
-                //Image
-                Image imageFinished;
-                InputStream in;
-                BufferedImage image;
-                Blob blob;
+                Items items;
 
-                Items items = new Items(rs.getInt("id"),
-                        rs.getString("orderNumber"),
-                        rs.getString("name"),
-                        rs.getString("info"),
-                        rs.getInt("minimum_to_order"),
-                        rs.getInt("in_stock"),
+                int id = rs.getInt("id");
+                String orderNumber = rs.getString("orderNumber");
+                String name =  rs.getString("name");
+                String info = rs.getString("info");
+                int minimumToOrder = rs.getInt("minimum_to_order");
+                int inStock = rs.getInt("in_stock");
 
-                        blob =
+                if(rs.getString("name_image") != null) {
+                    String imageName = rs.getString("name_image");
+                    //Image binnenhalen als binaryStream
+                    InputStream binaryStream = rs.getBinaryStream("image");
+                    //Decode de binaryStream als bufferedImage
+                    BufferedImage bufferedImage = null;
+                    bufferedImage = ImageIO.read(binaryStream);
+                    Image image = SwingFXUtils.toFXImage(bufferedImage, null);
 
 
-                        );
+                     items = new Items(id,orderNumber,name,info,minimumToOrder,inStock,image,imageName);
+                }else {
+                     items = new Items(id,orderNumber,name,info,minimumToOrder,inStock);
+                }
+
+
 
                 observableList.add(items);
             }
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             e.getCause().printStackTrace();
         }
 
@@ -406,9 +416,11 @@ public class ControllerApplication {
             applicationInfoTextArea.setText(items.getInfo());
 
             //Image
-            File file = new File("../picturesItems/" + items.getId() + ".jpg");
-            Image image = new Image(file.toURI().toString());
-            applicationItemsImageView.setImage(image);
+            if(items.getImage() != null) {
+                applicationItemsImageView.setImage(items.getImage());
+            }else {
+                applicationItemsImageView.setImage(new Image(getClass().getResourceAsStream("/pictures/no_image.png")));
+            }
 
         }
     }
