@@ -31,11 +31,11 @@ public class ControllerNewItem {
     public void browseAction(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose Image");
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Image Files","*.jpg"));
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Image Files", "*.jpg"));
 
         file = fileChooser.showOpenDialog(null);
 
-        if(file != null){
+        if (file != null) {
             newItemImageTextView.setText(file.getAbsolutePath());
         }
 
@@ -60,31 +60,30 @@ public class ControllerNewItem {
 
     }
 
+    //Save Button action
     public void saveAction(ActionEvent actionEvent) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
 
-        if(newItemNameTextField.getText().isEmpty()){
+        if (newItemNameTextField.getText().isEmpty()) {
             alert.setContentText("Please Fill in the name");
-        }else if(newItemOrderNumberTextField.getText().isEmpty()){
+        } else if (newItemOrderNumberTextField.getText().isEmpty()) {
             alert.setContentText("Please Fill in the order number");
-        }else if(checkOrderNumber()){
+        } else if (checkOrderNumber()) {
             alert.setContentText("The order Number already exist");
-        }else if(checkName()) {
+        } else if (checkName()) {
             alert.setContentText("The name already exist");
-        }else {
+        } else {
             //Als er een image is
-            if(file != null){
-                String mysqlInsertWithImage = "INSERT INTO items (orderNumber,name,info,minimum_to_order,in_stock,name_image,image) " +
-                        "VALUES (?,?,?,?,?,?,?)";
+            if (file != null) {
+                String mysqlInsertWithImage = "INSERT INTO items (orderNumber,name,info,minimum_to_order,in_stock,name_image,image) VALUES (?,?,?,?,?,?,?)";
                 PreparedStatement ps;
 
                 try {
                     ps = MyConnection.getConnection().prepareStatement(mysqlInsertWithImage);
 
 
-
-                    FileInputStream fis=new FileInputStream(file);
+                    FileInputStream fis = new FileInputStream(file);
 
                     ps.setString(1, newItemOrderNumberTextField.getText());
                     ps.setString(2, newItemNameTextField.getText());
@@ -92,15 +91,14 @@ public class ControllerNewItem {
                     ps.setInt(4, Integer.parseInt(newItemMinimumToOrderTextField.getText()));
                     ps.setInt(5, Integer.parseInt(newItemIntStockTextField.getText()));
 
-                    ps.setString(6,"image_" + newItemNameTextField.getText());
-                    ps.setBlob(7,fis,(int)file.length());
+                    ps.setString(6, "image_" + newItemNameTextField.getText());
+                    ps.setBlob(7, fis, (int) file.length());
 
                     ps.executeUpdate();
                     fis.close();
 
 
-
-                }catch (SQLException | FileNotFoundException e){
+                } catch (SQLException | FileNotFoundException e) {
                     e.getCause().printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -108,7 +106,7 @@ public class ControllerNewItem {
 
 
                 //Als er geen image is
-            }else {
+            } else {
                 String mysqlInsert = "INSERT INTO items (orderNumber,name,info,minimum_to_order,in_stock) " +
                         "VALUES (?,?,?,?,?)";
                 PreparedStatement ps;
@@ -136,16 +134,11 @@ public class ControllerNewItem {
             }
 
 
-
-
-
-
-
         }
         alert.show();
     }
 
-    public boolean checkOrderNumber(){
+    public boolean checkOrderNumber() {
         boolean orderNumberExist = false;
         String mysqlSelect = "SELECT * FROM items WHERE orderNumber=?";
         PreparedStatement ps;
@@ -153,20 +146,20 @@ public class ControllerNewItem {
 
         try {
             ps = MyConnection.getConnection().prepareStatement(mysqlSelect);
-            ps.setString(1,newItemOrderNumberTextField.getText());
+            ps.setString(1, newItemOrderNumberTextField.getText());
 
             rs = ps.executeQuery();
 
-            while (rs.next()){
+            while (rs.next()) {
                 orderNumberExist = true;
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.getCause().printStackTrace();
         }
         return orderNumberExist;
     }
 
-    public boolean checkName(){
+    public boolean checkName() {
         boolean nameExist = false;
         String mysqlSelect = "SELECT * FROM items WHERE name=?";
         PreparedStatement ps;
@@ -174,20 +167,20 @@ public class ControllerNewItem {
 
         try {
             ps = MyConnection.getConnection().prepareStatement(mysqlSelect);
-            ps.setString(1,newItemNameTextField.getText());
+            ps.setString(1, newItemNameTextField.getText());
 
             rs = ps.executeQuery();
 
-            while (rs.next()){
+            while (rs.next()) {
                 nameExist = true;
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.getCause().printStackTrace();
         }
         return nameExist;
     }
 
-    public int getIdFromSql(String orderNumber){
+    public int getIdFromSql(String orderNumber) {
         String mysqlSelect = "SELECT id FROM items WHERE orderNumber = ?";
         PreparedStatement ps;
         ResultSet rs;
@@ -195,14 +188,14 @@ public class ControllerNewItem {
 
         try {
             ps = MyConnection.getConnection().prepareStatement(mysqlSelect);
-            ps.setString(1,orderNumber);
+            ps.setString(1, orderNumber);
 
             rs = ps.executeQuery();
 
-            while (rs.next()){
+            while (rs.next()) {
                 id = rs.getInt("id");
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.getCause().printStackTrace();
         }
 

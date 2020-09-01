@@ -82,7 +82,6 @@ public class ControllerApplication {
     }
 
 
-
     //Connection
     public static class MyConnection {
 
@@ -235,11 +234,11 @@ public class ControllerApplication {
         }
     }
 
-    public void refreshAction(ActionEvent actionEvent){
+    public void refreshAction(ActionEvent actionEvent) {
         refreshTableView();
     }
 
-    public void removeAction(ActionEvent actionEvent){
+    public void removeAction(ActionEvent actionEvent) {
         removeItem();
     }
 
@@ -260,35 +259,9 @@ public class ControllerApplication {
     private ImageView applicationItemsImageView;
     ObservableList<Items> itemsObservableList = FXCollections.observableArrayList();
 
-    public void testAdding(){
-        int count = 20;
-        String mysqlInsert = "INSERT INTO items(orderNumber, name, info, minimum_to_order, in_stock) VALUES (?,?,?,?,?)";
-        PreparedStatement ps;
-
-        for (int i = 0; i < count; i++) {
-
-            try {
-                ps = MyConnection.getConnection().prepareStatement(mysqlInsert);
-                ps.setInt(1,count);
-                ps.setString(2,String.valueOf(count+1));
-                ps.setString(3,String.valueOf(count+2));
-                ps.setInt(4,count+3);
-                ps.setInt(5,count+4);
-
-                ps.execute();
-            }catch (SQLException e){
-                e.getCause().printStackTrace();
-            }
-
-           count++;
-
-        }
-
-    }
-
     public void initialize() {
 
-
+        //TableColumn link met 'Items' via PropertyValueFactory
         applicationTableColumnOrderNumber.setCellValueFactory(new PropertyValueFactory<>("orderNumber"));
         applicationTableColumnOrderNumber.setCellValueFactory(new PropertyValueFactory<>("orderNumber"));
         applicationTableColumnInStock.setCellValueFactory(new PropertyValueFactory<>("inStock"));
@@ -311,39 +284,39 @@ public class ControllerApplication {
             onEdit();
         });
 
-        //Search Thread
+        //Search Thread starten
         Search search = new Search();
         search.start();
 
 
     }
 
-    public void removeItem(){
+    public void removeItem() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         String mysqlDelete = "DELETE FROM items WHERE id=?";
 
-        if(applicationTableViewItems.getSelectionModel().getSelectedItem() != null){
+        if (applicationTableViewItems.getSelectionModel().getSelectedItem() != null) {
             Items itemToRemove = applicationTableViewItems.getSelectionModel().getSelectedItem();
 
             PreparedStatement ps;
 
             try {
                 ps = MyConnection.getConnection().prepareStatement(mysqlDelete);
-                ps.setInt(1,itemToRemove.getId());
+                ps.setInt(1, itemToRemove.getId());
 
                 boolean removed = ps.execute();
 
-                if(!removed){
+                if (!removed) {
                     alert.setContentText("Delete complete");
-                }else alert.setContentText("Something went wrong");
+                } else alert.setContentText("Something went wrong");
 
 
-            }catch (SQLException e){
+            } catch (SQLException e) {
                 e.getCause().printStackTrace();
             }
 
 
-        }else alert.setContentText("Please select an item");
+        } else alert.setContentText("Please select an item");
 
         refreshTableView();
         alert.show();
@@ -359,33 +332,33 @@ public class ControllerApplication {
         try {
             st = ControllerLogin.MyConnection.getConnection().createStatement();
             rs = st.executeQuery(mysqlSelect);
-
-            //TODO MOET NOG VAN BLOB NAAR IMAGE GEBRACHT WORDEN,Niet direct in items steken eerst binnenhalen
             while (rs.next()) {
                 Items items;
 
                 int id = rs.getInt("id");
                 String orderNumber = rs.getString("orderNumber");
-                String name =  rs.getString("name");
+                String name = rs.getString("name");
                 String info = rs.getString("info");
                 int minimumToOrder = rs.getInt("minimum_to_order");
                 int inStock = rs.getInt("in_stock");
 
-                if(rs.getString("name_image") != null) {
+                //Kijk na of er een image in de sql aanwezig is,anders word de contructor van 'Items' zonder image en image naam opgeroepen
+                if (rs.getString("name_image") != null) {
                     String imageName = rs.getString("name_image");
                     //Image binnenhalen als binaryStream
                     InputStream binaryStream = rs.getBinaryStream("image");
                     //Decode de binaryStream als bufferedImage
                     BufferedImage bufferedImage = null;
                     bufferedImage = ImageIO.read(binaryStream);
+                    //Om van BufferedImage naar imageFx te gaan
                     Image image = SwingFXUtils.toFXImage(bufferedImage, null);
 
-
-                     items = new Items(id,orderNumber,name,info,minimumToOrder,inStock,image,imageName);
-                }else {
-                     items = new Items(id,orderNumber,name,info,minimumToOrder,inStock);
+                    //Met image
+                    items = new Items(id, orderNumber, name, info, minimumToOrder, inStock, image, imageName);
+                } else {
+                    //Zonder image
+                    items = new Items(id, orderNumber, name, info, minimumToOrder, inStock);
                 }
-
 
 
                 observableList.add(items);
@@ -403,9 +376,12 @@ public class ControllerApplication {
         applicationTableViewItems.setItems(itemsObservableList);
     }
 
+    //al de data van het geselecteerde item weergeven.
     public void onEdit() {
-        // check the table's selected item and get selected item
+        // check of er een Item geselecteerd is in de TableView
         if (applicationTableViewItems.getSelectionModel().getSelectedItem() != null) {
+
+            //Haal dit Item binnen
             Items items = applicationTableViewItems.getSelectionModel().getSelectedItem();
 
             //Items
@@ -416,9 +392,10 @@ public class ControllerApplication {
             applicationInfoTextArea.setText(items.getInfo());
 
             //Image
-            if(items.getImage() != null) {
+            //Kijk of er een image is opgeslagen,toon anders een image met "no image"
+            if (items.getImage() != null) {
                 applicationItemsImageView.setImage(items.getImage());
-            }else {
+            } else {
                 applicationItemsImageView.setImage(new Image(getClass().getResourceAsStream("/pictures/no_image.png")));
             }
 
@@ -433,6 +410,7 @@ public class ControllerApplication {
 
         public void run() {
             while (true) {
+                //Kijk na of de zoekbalk leeg is en of er verandering is in de zoekterm.
                 if (!applicationSearchTextField.getText().isEmpty() && sameWord) {
                     applicationTableViewItems.setItems(filteredList(itemsObservableList, applicationSearchTextField.getText()));
                     savedWord = applicationSearchTextField.getText();
@@ -442,7 +420,7 @@ public class ControllerApplication {
                 else if (!sameWord && !savedWord.equals(applicationSearchTextField.getText())) {
                     sameWord = true;
                 }
-                //Ales er geen woord is
+                //Als er geen woord is word de oude lijst terug in de tableview geladen
                 else if (applicationSearchTextField.getText().isEmpty()) {
                     applicationTableViewItems.setItems(itemsObservableList);
                 }

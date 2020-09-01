@@ -80,6 +80,8 @@ public class ControllerLogin {
                 stage.setTitle("Main application");
                 stage.setScene(scene);
                 stage.show();
+
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -130,10 +132,6 @@ public class ControllerLogin {
 
         }
     }
-
-
-
-
 
 
 }
