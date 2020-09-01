@@ -14,8 +14,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.List;
 
@@ -356,13 +358,25 @@ public class ControllerApplication {
             st = ControllerLogin.MyConnection.getConnection().createStatement();
             rs = st.executeQuery(mysqlSelect);
 
+            //TODO MOET NOG VAN BLOB NAAR IMAGE GEBRACHT WORDEN,Niet direct in items steken eerst binnenhalen
             while (rs.next()) {
+                //Image
+                Image imageFinished;
+                InputStream in;
+                BufferedImage image;
+                Blob blob;
+
                 Items items = new Items(rs.getInt("id"),
                         rs.getString("orderNumber"),
                         rs.getString("name"),
                         rs.getString("info"),
                         rs.getInt("minimum_to_order"),
-                        rs.getInt("in_stock"));
+                        rs.getInt("in_stock"),
+
+                        blob =
+
+
+                        );
 
                 observableList.add(items);
             }

@@ -73,7 +73,7 @@ public class ControllerNewItem {
         }else if(checkName()) {
             alert.setContentText("The name already exist");
         }else {
-            //Als er een image is //TODO werkt,alleen nog de juiste gegevens aan de image geven
+            //Als er een image is
             if(file != null){
                 String mysqlInsertWithImage = "INSERT INTO items (orderNumber,name,info,minimum_to_order,in_stock,name_image,image) " +
                         "VALUES (?,?,?,?,?,?,?)";
@@ -92,11 +92,12 @@ public class ControllerNewItem {
                     ps.setInt(4, Integer.parseInt(newItemMinimumToOrderTextField.getText()));
                     ps.setInt(5, Integer.parseInt(newItemIntStockTextField.getText()));
 
-                    ps.setString(6,"image 1");
+                    ps.setString(6,"image_" + newItemNameTextField.getText());
                     ps.setBlob(7,fis,(int)file.length());
 
                     ps.executeUpdate();
                     fis.close();
+
 
 
                 }catch (SQLException | FileNotFoundException e){

@@ -9,7 +9,10 @@ public class Items {
     private String info;
     private int minimumToOrder;
     private int inStock;
+    private Image image;
+    private String imageName;
 
+    //zonder image
     public Items(int id, String orderNumber, String name, String info, int minimumToOrder, int inStock) {
         this.id = id;
         this.orderNumber = orderNumber;
@@ -17,6 +20,18 @@ public class Items {
         this.info = info;
         this.minimumToOrder = minimumToOrder;
         this.inStock = inStock;
+    }
+
+    //Met image
+    public Items(int id, String orderNumber, String name, String info, int minimumToOrder, int inStock, Image image, String imageName) {
+        this.id = id;
+        this.orderNumber = orderNumber;
+        this.name = name;
+        this.info = info;
+        this.minimumToOrder = minimumToOrder;
+        this.inStock = inStock;
+        this.image = image;
+        this.imageName = imageName;
     }
 
     public int getId() {
@@ -65,5 +80,21 @@ public class Items {
 
     public void setInStock(int inStock) {
         this.inStock = inStock;
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 }
