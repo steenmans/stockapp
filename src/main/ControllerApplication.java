@@ -195,9 +195,17 @@ public class ControllerApplication {
 
                 //Als ok vernieuw de tableView
                 if (!updateOk) {
+                    //Stop de search tread en vernieuw deze,anders vernieuwd deze niet als er op save word geduwd
+                    search.interrupt();
+
                     alert.setContentText("Item updated");
                     itemsObservableList = getItemsFromSql();
                     applicationTableViewItems.setItems(itemsObservableList);
+
+                    //Initialiseer + start de thread opnieuw
+                    search = new Search();
+                    search.start();
+
                 } else {
                     alert.setContentText("Something went wrong");
                 }
@@ -259,6 +267,8 @@ public class ControllerApplication {
     private ImageView applicationItemsImageView;
     ObservableList<Items> itemsObservableList = FXCollections.observableArrayList();
 
+    //Thread moet bereikbaar zijn om tijdens 'saveAction' te kunnen zoeken
+    Search search = new Search();
     public void initialize() {
 
         //TableColumn link met 'Items' via PropertyValueFactory
@@ -285,7 +295,6 @@ public class ControllerApplication {
         });
 
         //Search Thread starten
-        Search search = new Search();
         search.start();
 
 
